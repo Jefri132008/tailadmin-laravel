@@ -1,0 +1,5 @@
+services:
+  web:
+    image: ${DOCKER_USER}/jefri132008-tailadmin-laravel:beta
+    ports:
+      - "8090:8090"
