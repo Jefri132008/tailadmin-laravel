@@ -46,3 +46,9 @@ jobs:
         run: docker compose down --rmi all
       - name: start container
         run: docker compose up -d
+      - name: Wait for MySQL
+        run: sleep 15
+      - name: Run Migrations
+        run: |
+          docker exec web php artisan migrate --force
+          docker exec web php artisan db:seed --force
