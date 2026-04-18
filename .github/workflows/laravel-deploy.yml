@@ -1,4 +1,4 @@
-ame: Laravel application (Mysql)
+name: Laravel application (Mysql)
 run-name: Build, Push and Deploy image tailadmin laravel
 on:
   push:
