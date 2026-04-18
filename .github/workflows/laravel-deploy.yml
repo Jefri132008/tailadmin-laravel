@@ -50,5 +50,4 @@ jobs:
         run: sleep 15
       - name: Run Migrations
         run: |
-          docker exec web php artisan migrate --force
-          docker exec web php artisan db:seed --force
+          docker exec anemon.test php artisan migrate --force

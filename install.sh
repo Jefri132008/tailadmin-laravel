@@ -13,7 +13,7 @@ chmod -R ug+rwx bootstrap storage || true
 
 # Install dependencies (Ganti dev jadi build)
 npm install --legacy-peer-deps --no-audit --progress=false
-npm run build 
+npm run prod
 
 composer install --optimize-autoloader --no-interaction
 

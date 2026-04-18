@@ -1,5 +1,9 @@
 FROM ubuntu:22.04
 RUN apt update -y && \
+
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt install -y nodejs
+
     DEBIAN_FRONTEND=noninteractive apt install -y apache2 \
     php \
     npm \
