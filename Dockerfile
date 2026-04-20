@@ -1,21 +1,24 @@
 FROM ubuntu:22.04
-RUN apt update -y && \
 
+# Gunakan ENV agar tidak error 'unknown instruction'
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Pastikan instalasi curl dan nodejs v18 ada di sini (untuk mendukung vue-i18n)
+RUN apt update -y && apt install -y curl
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
-RUN apt install -y nodejs
 
-    DEBIAN_FRONTEND=noninteractive apt install -y apache2 \
+RUN apt update -y && apt install -y \
+    apache2 \
     php \
-    npm \
+    nodejs \
     php-xml \
     php-mbstring \
     php-curl \
     php-mysql \
     php-gd \
     unzip \
-    nano  \
-    curl && \
-    rm -rf /var/lib/apt/lists/*
+    nano \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN curl -sS https://getcomposer.org/installer -o composer-setup.php && \
     php composer-setup.php --install-dir=/usr/local/bin --filename=composer
@@ -28,13 +31,7 @@ ADD sosmed.conf /etc/apache2/sites-available/
 
 RUN a2dissite 000-default.conf && a2ensite sosmed.conf
 
-RUN mkdir -p bootstrap/cache \
-    storage/framework/cache \
-    storage/framework/sessions \
-    storage/framework/views && \
-    chown -R www-data:www-data bootstrap storage && \
-    chmod -R ug+rwx bootstrap storage
-
+# Jalankan install.sh dengan bash -x untuk debug jika ada error lagi
 RUN chmod +x install.sh && bash -x ./install.sh
 
 RUN chown -R www-data:www-data /var/www/sosmed && \
