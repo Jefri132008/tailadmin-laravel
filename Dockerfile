@@ -1,41 +1,34 @@
-FROM ubuntu:22.04
+FROM php:8.1-fpm
 
-# Gunakan ENV agar tidak error 'unknown instruction'
-ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y \
+	libpng-dev \
+	libjpeg-dev \
+	libfreetype6-dev \
+	locales \
+	zip \
+	jpegoptim optipng pngquant gifsicle \
+	vim \
+	unzip \
+	git \
+	curl \
+	libonig-dev \
+	libxml2-dev \
+	libzip-dev \
+	libicu-dev \
+	g++ \
+	nodejs \
+	npm
 
-# Pastikan instalasi curl dan nodejs v18 ada di sini (untuk mendukung vue-i18n)
-RUN apt update -y && apt install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl zip
 
-RUN apt update -y && apt install -y \
-    apache2 \
-    php \
-    nodejs \
-    php-xml \
-    php-mbstring \
-    php-curl \
-    php-mysql \
-    php-gd \
-    unzip \
-    nano \
-    && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
 
-RUN curl -sS https://getcomposer.org/installer -o composer-setup.php && \
-    php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+COPY . .
 
-RUN mkdir -p /var/www/sosmed
-WORKDIR /var/www/sosmed
+RUN chmod +x install.sh
+RUN ./install.sh
 
-ADD . /var/www/sosmed
-ADD sosmed.conf /etc/apache2/sites-available/
-
-RUN a2dissite 000-default.conf && a2ensite sosmed.conf
-
-# Jalankan install.sh dengan bash -x untuk debug jika ada error lagi
-RUN chmod +x install.sh && bash -x ./install.sh
-
-RUN chown -R www-data:www-data /var/www/sosmed && \
-    chmod -R 755 /var/www/sosmed
+CMD php artisan serve --host=0.0.0.0 --port=8090
 
 EXPOSE 8090
-CMD php artisan serve --host=0.0.0.0 --port=8090
