@@ -11,8 +11,10 @@ mkdir -p bootstrap/cache \
 chown -R www-data:www-data bootstrap storage || true
 chmod -R ug+rwx bootstrap storage || true
 
-# Install dependencies (Ganti dev jadi build)
+# Install dependencies
 npm install --legacy-peer-deps --no-audit --progress=false
+# Tambahkan baris di bawah ini agar tidak error 'Module not found'
+npm install @popperjs/core --save-dev
 npm run prod
 
 composer install --optimize-autoloader --no-interaction
