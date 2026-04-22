@@ -30,7 +30,11 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-      - name: stop and remove existing container
-        run: docker compose down --rmi all
-      - name: start container
+      - name: Stop and remove existing container
+        run: docker compose down
+      - name: Remove old images
+        run: |
+          docker compose down
+          docker system prune -f
+      - name: Start container
         run: docker compose up -d
